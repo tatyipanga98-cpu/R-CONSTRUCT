@@ -1,0 +1,105 @@
+# R-CONSTRUCT — Application de suivi de chantier
+
+Prototype d'application mobile de suivi de chantier pour **R-CONSTRUCT**.
+Objectif : digitaliser le terrain (photos, réserves, rapports, pointage) et
+offrir un portail de suivi aux clients.
+
+> ⚠️ **Statut : prototype en construction.** Ce dépôt contient la documentation
+> et les jeux de données de test. Le prototype applicatif est hébergé sur Glide.
+
+---
+
+## 🎯 Objectif
+
+Remplacer la dispersion de l'information (photos dans WhatsApp, rapports papier,
+réserves oubliées) par une application mobile unique, utilisable sur le terrain,
+fonctionnant hors ligne pour la saisie, avec une vue client en lecture seule.
+
+### Modules du prototype
+
+| Module | Description | Statut |
+|---|---|---|
+| 📷 Photos | Photo taguée par zone, galerie filtrable | ⬜ À faire |
+| 🔧 Réserves | Création, assignation, levée | ⬜ À faire |
+| 📝 Rapports | Rapport d'intervention quotidien | ⬜ À faire |
+| ⏱️ Pointage | Check-in / check-out horodaté | ⬜ À faire |
+| 👤 Portail client | Vue lecture seule filtrée | ⬜ À faire |
+
+### Hors périmètre
+
+Notifications push · statistiques avancées · facturation · publication
+App Store / Play Store · gestion documentaire contractuelle complète.
+
+---
+
+## 🏗️ Architecture technique
+
+- **Plateforme** : Glide (no-code, PWA mobile-first)
+- **Base de données** : Glide Tables ou Google Sheets connecté
+- **Construction assistée** : Claude via MCP Glide
+- **Plan requis** : Glide Pro
+- **Documentation** : ce dépôt GitHub
+
+### Limites connues
+
+| Limite | Impact | Contournement |
+|---|---|---|
+| Modification hors ligne indisponible | Lever réserve / clôturer pointage → réseau requis | Accepté pour le prototype |
+| Pas de notifications push | Pas d'alerte temps réel | Email / WhatsApp manuel |
+| Pas d'export du code source | Prototype reste sur Glide | Duplication manuelle datée |
+| Performance sur gros volumes | Ralentissement possible | 1–2 chantiers pilotes max |
+
+---
+
+## 📊 Modèle de données
+
+7 tables : `Chantiers` · `Utilisateurs` · `Zones` · `Photos` · `Reserves` ·
+`Rapports` · `Pointages`
+
+Détail dans [`docs/01-cahier-des-charges.md`](docs/01-cahier-des-charges.md).
+
+**Règle d'or 1** : chaque objet publiable porte `Visible_Client`
+(Oui/Non, **défaut Non**).
+
+**Règle d'or 2** : aucune suppression définitive, archivage uniquement
+(`Archivé = Oui`).
+
+---
+
+## 👥 Rôles
+
+`Admin` · `Conducteur` · `Compagnon` · `Client` · `Sous-traitant`
+
+Matrice complète : [`docs/02-matrice-permissions.md`](docs/02-matrice-permissions.md)
+
+---
+
+## 🗺️ Feuille de route
+
+| Bloc | Contenu | Statut |
+|---|---|---|
+| A — Socle | Connexion, liste et détail chantier | ⬜ À faire |
+| B — Photos | Formulaire photo, galerie | ⬜ À faire |
+| C — Réserves | Liste, formulaire, levée | ⬜ À faire |
+| D — Rapports | Liste, formulaire, détail | ⬜ À faire |
+| E — Pointage | Check-in/out, historique | ⬜ À faire |
+| F — Portail client | Vue lecture seule | ⬜ À faire |
+
+⬜ à faire · 🟡 en cours · ✅ terminé · 🔴 bloqué
+
+---
+
+## ✅ Critères d'acceptation
+
+1. Photo prise en < 15 s, hors ligne, synchronisée au retour réseau.
+2. Conducteur retrouve une photo en < 30 s.
+3. Réserve créée, assignée, levée avec traçabilité.
+4. Rapport avec photos saisi et consultable.
+5. Check-in / check-out enregistré avec horodatage.
+6. Client ne voit que `Visible_Client = Oui`.
+7. Aucune suppression définitive par un compagnon.
+8. Utilisateur non assigné ne voit pas le chantier.
+
+---
+
+## 📁 Structure
