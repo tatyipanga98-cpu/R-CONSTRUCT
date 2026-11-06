@@ -1,0 +1,9 @@
+Email,Nom,Rôle,ID_Chantier_Assigné
+admin@r-construct.test,Admin Test,Admin,CH-001
+conducteur1@r-construct.test,Jean K.,Conducteur,CH-001
+conducteur2@r-construct.test,Marie L.,Conducteur,CH-002
+compagnon1@r-construct.test,Paul M.,Compagnon,CH-001
+compagnon2@r-construct.test,Alain T.,Compagnon,CH-001
+compagnon3@r-construct.test,Sylvie N.,Compagnon,CH-002
+client1@r-construct.test,Mme Dupont,Client,CH-001
+client2@r-construct.test,M. Kabila,Client,CH-002
