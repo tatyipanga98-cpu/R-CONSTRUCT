@@ -48,7 +48,7 @@ input, select, textarea { font: inherit; }
 }
 
 /* ---------- Connexion ---------- */
-#screen-login {
+#screen-login.active {
   background:
     radial-gradient(circle at 85% 10%, rgba(221, 107, 32, .35), transparent 45%),
     radial-gradient(circle at 10% 90%, rgba(43, 74, 122, .9), transparent 50%),
