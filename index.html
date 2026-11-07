@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#1A365D">
+  <meta name="description" content="R-CONSTRUCT : gestion de chantiers, photos, réserves, rapports et pointage.">
+  <title>R-CONSTRUCT</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- CONNEXION -->
+    <section id="screen-login" class="screen active">
+      <div class="login-hero">
+        <img class="logo-img" src="logo.jpg" alt="Logo R-CONSTRUCT">
+        <h1 class="brand">R-CONSTRUCT</h1>
+        <p class="tagline">L'art de bâtir des rêves</p>
+      </div>
+      <div class="login-card">
+        <h2>Choisissez votre profil</h2>
+        <p class="muted">Simulation de connexion (prototype)</p>
+        <div id="user-list" class="user-list"></div>
+      </div>
+    </section>
+
+    <!-- ACCUEIL -->
+    <section id="screen-home" class="screen">
+      <header class="topbar">
+        <div>
+          <p class="greeting">Bonjour,</p>
+          <h2 id="home-user-name">—</h2>
+        </div>
+        <button class="icon-btn" id="btn-logout" aria-label="Se déconnecter">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+        </button>
+      </header>
+
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-value" id="stat-chantiers">0</span>
+          <span class="stat-label">Chantiers</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="stat-reserves">0</span>
+          <span class="stat-label" id="stat-label-2">Réserves ouvertes</span>
+        </div>
+      </div>
+
+      <h3 class="section-title">Mes chantiers</h3>
+      <div id="chantier-list" class="chantier-list"></div>
+    </section>
+
+    <!-- PHOTOS -->
+    <section id="screen-photos" class="screen">
+      <header class="topbar">
+        <div>
+          <p class="greeting" id="photo-chantier">—</p>
+          <h2>Photos</h2>
+        </div>
+        <button class="chip-btn" id="btn-zone-add" hidden>+ Zone</button>
+      </header>
+      <div class="filter-bar">
+        <select id="photo-zone-filter" aria-label="Filtrer par zone"></select>
+      </div>
+      <div id="photo-grid" class="photo-grid"></div>
+      <button class="fab" id="fab-photo" aria-label="Prendre une photo">
+        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+      <input type="file" id="photo-input" accept="image/*" capture="environment" hidden>
+    </section>
+
+    <!-- RÉSERVES -->
+    <section id="screen-reserves" class="screen">
+      <header class="topbar">
+        <div>
+          <p class="greeting" id="reserve-chantier">—</p>
+          <h2>Réserves</h2>
+        </div>
+      </header>
+      <div id="reserve-list" class="item-list"></div>
+      <button class="fab" id="fab-reserve" aria-label="Nouvelle réserve">
+        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+    </section>
+
+    <!-- RAPPORTS -->
+    <section id="screen-rapports" class="screen">
+      <header class="topbar">
+        <div>
+          <p class="greeting" id="rapport-chantier">—</p>
+          <h2>Rapports</h2>
+        </div>
+      </header>
+      <div id="rapport-list" class="item-list"></div>
+      <button class="fab" id="fab-rapport" aria-label="Nouveau rapport">
+        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+    </section>
+
+    <!-- PROFIL & POINTAGE -->
+    <section id="screen-profil" class="screen">
+      <header class="topbar"><div><p class="greeting">Mon espace</p><h2>Profil</h2></div></header>
+      <div class="profil-card" id="profil-card"></div>
+      <div id="pointage-block" class="pointage-block"></div>
+      <div id="pointage-history"></div>
+    </section>
+
+  </div>
+
+  <!-- FEUILLES MODALES -->
+  <div class="sheet-backdrop" id="sheet-photo" hidden>
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="t-photo">
+      <div class="sheet-grip"></div>
+      <h3 id="t-photo">Nouvelle photo</h3>
+      <img id="photo-preview" class="preview" alt="Aperçu de la photo">
+      <form id="form-photo" class="form">
+        <div class="field">
+          <label for="photo-form-zone">Zone</label>
+          <select id="photo-form-zone" required></select>
+        </div>
+        <div class="field">
+          <label for="photo-comment">Commentaire</label>
+          <textarea id="photo-comment" rows="3" placeholder="Ex. : coffrage du poteau P3"></textarea>
+        </div>
+        <label class="toggle-row">
+          <input type="checkbox" id="photo-visible">
+          <span>Publier au client <small>(désactivé par défaut)</small></span>
+        </label>
+        <div class="form-actions">
+          <button type="button" class="btn-ghost" data-close="sheet-photo">Annuler</button>
+          <button type="submit" class="btn-primary">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="sheet-backdrop" id="sheet-lightbox" hidden>
+    <div class="sheet" role="dialog" aria-modal="true">
+      <div class="sheet-grip"></div>
+      <img id="lb-img" class="preview" alt="Photo de chantier">
+      <div id="lb-meta" class="lb-meta"></div>
+      <div class="form-actions">
+        <button type="button" class="btn-ghost" data-close="sheet-lightbox">Fermer</button>
+        <button type="button" class="btn-primary" id="lb-toggle" hidden></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sheet-backdrop" id="sheet-zone" hidden>
+    <div class="sheet" role="dialog" aria-modal="true">
+      <div class="sheet-grip"></div>
+      <h3>Nouvelle zone</h3>
+      <form id="form-zone" class="form">
+        <div class="field">
+          <label for="zone-name">Nom de la zone</label>
+          <input id="zone-name" type="text" required placeholder="Ex. : Étage 3">
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn-ghost" data-close="sheet-zone">Annuler</button>
+          <button type="submit" class="btn-primary">Créer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="sheet-backdrop" id="sheet-reserve" hidden>
+    <div class="sheet" role="dialog" aria-modal="true">
+      <div class="sheet-grip"></div>
+      <h3>Nouvelle réserve</h3>
+      <form id="form-reserve" class="form">
+        <div class="field">
+          <label for="reserve-desc">Description</label>
+          <textarea id="reserve-desc" rows="3" required placeholder="Ex. : enduit à reprendre"></textarea>
+        </div>
+        <div class="field">
+          <label for="reserve-zone">Zone</label>
+          <select id="reserve-zone"></select>
+        </div>
+        <div class="field">
+          <label for="reserve-assignee">Assigner à</label>
+          <select id="reserve-assignee"></select>
+        </div>
+        <div class="field">
+          <label for="reserve-date">Échéance</label>
+          <input id="reserve-date" type="date">
+        </div>
+        <div class="field">
+          <label class="btn-ghost btn-block file-label" for="reserve-photo">Ajouter une photo (optionnel)</label>
+          <input id="reserve-photo" type="file" accept="image/*" capture="environment" class="sr-only">
+          <img id="reserve-preview" class="preview" alt="Aperçu" hidden>
+        </div>
+        <label class="toggle-row">
+          <input type="checkbox" id="reserve-visible">
+          <span>Visible par le client</span>
+        </label>
+        <div class="form-actions">
+          <button type="button" class="btn-ghost" data-close="sheet-reserve">Annuler</button>
+          <button type="submit" class="btn-primary">Créer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="sheet-backdrop" id="sheet-rapport" hidden>
+    <div class="sheet" role="dialog" aria-modal="true">
+      <div class="sheet-grip"></div>
+      <h3>Nouveau rapport</h3>
+      <form id="form-rapport" class="form">
+        <div class="field">
+          <label for="rapport-date">Date</label>
+          <input id="rapport-date" type="text" readonly>
+        </div>
+        <div class="field">
+          <label for="rapport-meteo">Météo</label>
+          <select id="rapport-meteo">
+            <option value="soleil">Ensoleillé</option>
+            <option value="nuages">Nuageux</option>
+            <option value="pluie">Pluie</option>
+            <option value="orage">Orage</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="rapport-effectif">Effectif présent</label>
+          <input id="rapport-effectif" type="number" min="0" inputmode="numeric" value="0">
+        </div>
+        <div class="field">
+          <label for="rapport-travaux">Travaux réalisés</label>
+          <textarea id="rapport-travaux" rows="5" required placeholder="Décrivez les travaux de la journée"></textarea>
+        </div>
+        <div class="field">
+          <label for="rapport-incidents">Incidents</label>
+          <textarea id="rapport-incidents" rows="3" placeholder="Laisser vide si aucun"></textarea>
+        </div>
+        <label class="toggle-row">
+          <input type="checkbox" id="rapport-visible">
+          <span>Visible par le client</span>
+        </label>
+        <div class="form-actions">
+          <button type="button" class="btn-ghost" data-close="sheet-rapport">Annuler</button>
+          <button type="submit" class="btn-primary">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- NAVIGATION BASSE -->
+  <nav class="bottom-nav" id="bottom-nav" hidden>
+    <button class="nav-item active" data-target="screen-home">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
+      <span>Accueil</span>
+    </button>
+    <button class="nav-item" data-target="screen-photos">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="12" cy="12" r="3.5"/></svg>
+      <span>Photos</span>
+    </button>
+    <button class="nav-item" data-target="screen-reserves">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      <span>Réserves</span>
+    </button>
+    <button class="nav-item" data-target="screen-rapports">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg>
+      <span>Rapports</span>
+    </button>
+    <button class="nav-item" data-target="screen-profil">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+      <span>Profil</span>
+    </button>
+  </nav>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
